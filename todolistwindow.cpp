@@ -24,13 +24,13 @@ ToDoListWindow::ToDoListWindow(QWidget *parent)
 
 /*подключение базы данных и в целом настройка работы программы*/
 
-    nameTable = "list";           /*тут нужно вставить название вашей таблицы*/
+    nameTable = "list";           /*изменить на название вашей таблицы*/
     db = QSqlDatabase::addDatabase("QMYSQL");
     db.setHostName("localhost");
     db.setUserName("noname");      /*изменить на ваше имя пользователя*/
     db.setPassword("1111");          /*изменить на ваш пароль*/
     db.setDatabaseName("ToDoList");  /*изменить на название вашей базы данных*/
-                                     /*последние изменения нужно внести в строках: 156 и 283*/
+
     if (!db.open()){
        qDebug() << db.lastError().text();
        return;
@@ -43,7 +43,6 @@ ToDoListWindow::ToDoListWindow(QWidget *parent)
     model->select();
 
 /*установка модели All Tasks в таблицу*/
-    di.setModel(model);
     tv->setModel(model);
     tv->setColumnHidden(0, true);
     tv->setColumnHidden(5, true);
@@ -150,13 +149,13 @@ ToDoListWindow::~ToDoListWindow()
 }
 
 
-
+/*выборка дат, в которых прошел deadline*/
 void ToDoListWindow::change_to_failed()
 {
-    QString str = "update list set status = '%1'"          /*вместо list название вашей таблицы*/
+    QString str = " set status = '%1'"
             "where deadline < '%2' and status != '%3'";
 
-    QSqlQuery(str.arg(2).arg(date).arg(1));
+    QSqlQuery("update " + nameTable + str.arg(2).arg(date).arg(1));
 }
 
 
@@ -190,7 +189,7 @@ void ToDoListWindow::removeRow()
    /*если удаляем с вкладки Done Tasks*/
    else
        if(tabWid->currentIndex() == 1){
-           model1->removeRow(tv->currentIndex().row());
+           model1->removeRow(tv1->currentIndex().row());
 
            model->select();
            model1->select();
@@ -199,7 +198,7 @@ void ToDoListWindow::removeRow()
    /*если удаляем с вкладки Failed Tasks*/
    else
        if(tabWid->currentIndex() == 2){
-           model2->removeRow(tv->currentIndex().row());
+           model2->removeRow(tv2->currentIndex().row());
 
            model->select();
            model2->select();
@@ -208,7 +207,7 @@ void ToDoListWindow::removeRow()
    /*если удаляем с вкладки Pending Tasks*/
    else
        if(tabWid->currentIndex() == 3){
-           model3->removeRow(tv->currentIndex().row());
+           model3->removeRow(tv3->currentIndex().row());
 
            model->select();
            model3->select();
@@ -280,15 +279,16 @@ void ToDoListWindow::doubleClicked(QModelIndex index)
 void ToDoListWindow::addDoneTask()
 {
     QVariant var = model->data(model->index(tv->currentIndex().row(), 0));
-    QString str = "update list set status = '%1'"             /*и здесь вместо list название вашей таблицы*/
+    QString str = " set status = '%1'"
             "where id = '%2'";
 
     /*ищем по айди и в статус добавляем 1*/
-    QSqlQuery(str.arg(1).arg(var.toString()));
+    QSqlQuery("update " + nameTable + str.arg(1).arg(var.toString()));
 
 
     /*обновление данных модели Done Tasks*/
     model1->select();
+    model2->select();
     model3->select();
 }
 
