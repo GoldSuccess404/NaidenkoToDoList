@@ -19,13 +19,16 @@ public:
     void lineClear();
 private:
     QTextEdit *task;
+
     QLineEdit *responsible;
     QLineEdit *email;
     QLineEdit *deadline;
+
     QLabel *labTask;
     QLabel *labResponsible;
     QLabel *labEmail;
     QLabel *labDeadline;
+
     QPushButton *ok;
     QPushButton *close1;
 public slots:
