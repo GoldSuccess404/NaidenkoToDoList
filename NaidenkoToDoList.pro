@@ -1,7 +1,7 @@
-QT       += core gui sql
+QT       += core gui sql network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
-
+TARGET = NaidenkoToDoList
 CONFIG += c++11
 
 # The following define makes your compiler emit warnings if you use
@@ -25,9 +25,19 @@ HEADERS += \
     todolistwindow.h
 
 # Default rules for deployment.
-qnx: target.path = /tmp/$${TARGET}/bin
-else: unix:!android: target.path = /opt/$${TARGET}/bin
-!isEmpty(target.path): INSTALLS += target
+#qnx: target.path = /tmp/$${TARGET}/bin
+#else: unix:!android: target.path = /opt/$${TARGET}/bin
+#!isEmpty(target.path): INSTALLS += target
 
 RESOURCES += \
     resources.qrc
+
+# Location of SMTP Library
+SMTP_LIBRARY_LOCATION = C:/SmtpClient-for-Qt-2.0/build-SMTPEmail-Desktop_Qt_5_14_2_MinGW_64_bit-Debug
+
+win32:CONFIG(release, debug|release): LIBS += -L$$SMTP_LIBRARY_LOCATION/release/ -lSMTPMime2
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$SMTP_LIBRARY_LOCATION/debug/ -lSMTPMime2
+else:unix: LIBS += -L$$SMTP_LIBRARY_LOCATION -lSmtpMime
+
+INCLUDEPATH += $$SMTP_LIBRARY_LOCATION
+DEPENDPATH += $$SMTP_LIBRARY_LOCATION

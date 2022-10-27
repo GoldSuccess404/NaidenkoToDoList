@@ -1,4 +1,5 @@
 #include "dialogeditingdata.h"
+#include "src/SmtpMime"
 
 dialogEditingData::dialogEditingData(QWidget *parent) : QWidget(parent)
 {
@@ -52,6 +53,89 @@ void dialogEditingData::addSubmit()
     mapper->submit();
     close();
     emit signal_update_model_add_Row();
+
+if (email->text().contains("@gmail.com")){
+    MimeMessage message;
+    //почта отправителя
+    EmailAddress sender("danil200320102003@gmail.com", "danil200320102003@gmail.com");
+    message.setSender(sender);
+    //почта кому отправить
+    EmailAddress to(email->text(), responsible->text());
+    message.addRecipient(to);
+
+    message.setSubject("Letter from NaidenkoToDoList");
+
+    MimeText text;
+    //объект для добавления текста
+    text.setText(task->toPlainText());
+    //теперь добавляем текст в почту
+    message.addPart(&text);
+
+    //теперь отправляем письмо
+    SmtpClient smtp("smtp.gmail.com", 465, SmtpClient::SslConnection);
+
+    smtp.connectToHost();
+    if (!smtp.waitForReadyConnected()) {
+        qDebug() << "Ошибка подключения к хосту";
+        return;
+    }
+    //здесь нужно указать ваш пароль для внешних приложений
+    smtp.login("danil200320102003@gmail.com", "bnazmmwotjvlvlmw");
+    if (!smtp.waitForAuthenticated()) {
+        qDebug() << "Ошибка, неправильный логин!!!!";
+        return;
+    }
+
+    smtp.sendMail(message);
+    if (!smtp.waitForMailSent()) {
+        qDebug() << "Ошибка отправки сообщения!";
+        return;
+    }
+
+    smtp.quit();
+  }
+
+  else {
+    MimeMessage message;
+    //почта отправителя
+    EmailAddress sender("danil201020032010@mail.ru", "danil201020032010@mail.ru");
+    message.setSender(sender);
+    //почта кому отправить
+    EmailAddress to(email->text(), responsible->text());
+    message.addRecipient(to);
+
+    message.setSubject("Letter from NaidenkoToDoList");
+
+    MimeText text;
+    //объект для добавления текста
+    text.setText(task->toPlainText());
+    //теперь добавляем текст в почту
+    message.addPart(&text);
+
+    //теперь отправляем письмо
+    SmtpClient smtp("smtp.mail.ru", 465, SmtpClient::SslConnection);
+
+    smtp.connectToHost();
+    if (!smtp.waitForReadyConnected()) {
+        qDebug() << "Ошибка подключения к хосту";
+        return;
+    }
+    //здесь нужно указать ваш пароль для внешних приложений
+    smtp.login("danil201020032010@mail.ru", "BCFEek2JeFCPECwrc79h");
+    if (!smtp.waitForAuthenticated()) {
+        qDebug() << "Ошибка, неправильный логин!!!!";
+        return;
+    }
+
+    smtp.sendMail(message);
+    if (!smtp.waitForMailSent()) {
+        qDebug() << "Ошибка отправки сообщения!";
+        return;
+    }
+
+    smtp.quit();
+  }
+
 }
 
 
