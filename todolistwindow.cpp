@@ -20,7 +20,7 @@ ToDoListWindow::ToDoListWindow(QWidget *parent)
 
     tabWid = new QTabWidget(this);
     this->setMinimumSize(700, 400);
-    setWindowIcon(QIcon("://images/mainIcon.png"));
+    setWindowIcon(QIcon("://images/mainicon.png"));
 
 /*подключение базы данных и в целом настройка работы программы*/
 
